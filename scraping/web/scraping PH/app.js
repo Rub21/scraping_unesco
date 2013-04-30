@@ -1,6 +1,13 @@
+var geojson = {
+    "type": "FeatureCollection",
+    "features": []
+};
+
+
 
 var all = '';
-for (i = 1; i < 10; i++) {
+for (i = 1; i < 3; i++) {
+
     data = '';
     $('#widgetscript').attr('urlwidget', 'http://whc.unesco.org/en/list/' + i);
 //get print data  
@@ -9,6 +16,7 @@ for (i = 1; i < 10; i++) {
 
 
     $.get(urlwidget, function(res) {
+        //parametro para eliminar string
         var first = res.responseText.search('<div class="relatedContent alternate">');
         var second = res.responseText.search('<div class="box gmap">');
 
@@ -16,42 +24,110 @@ for (i = 1; i < 10; i++) {
         data = data.replace('<a href="/en/statesparties/', '<a href="#');
         data = data.replace('style="vertical-align:middle; border:1px solid #666666"', '');
         data = data.replace('/uploads/states/small/', '');
-        //console.log(data);
+
+        //console.log($(data)[1].previousSibling.children[1].innerText);
+        //console.log($(data));
+
+        ///declaracion de JSON
+
+        var d = {
+            "geometry": {
+                "type": "Point",
+                "coordinates": [0, 0]
+            },
+            "type": "Feature",
+            "properties": {
+                "country": '',
+                "name": '',
+                "property": '',
+                "criteria": '',
+                "dateofinscription": ''
+            }
+        };
+
+        console.log($(data)[1].previousSibling.childElementCount);
+        console.log($(data)[1].previousSibling.children[0].innerText);
         if (data.length > 0) {
             all += data;
+            if ($(data)[1].previousSibling.childElementCount === 7) {
+
+                d.properties.country = $(data)[1].previousSibling.children[0].innerText;
+                d.properties.country = d.properties.country.replace(/\n/g, '');
+
+                d.properties.name = $(data)[1].previousSibling.children[1].innerText;
+                d.properties.name = d.properties.name.replace(/\n/g, '');
+
+                d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
+                d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
+
+                d.properties.criteria = $(data)[1].previousSibling.children[4].innerText;
+                d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
+
+                d.properties.property = $(data)[1].previousSibling.children[5].innerText;
+                d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
+                geojson.features.push(d);
+
+            } else if ($(data)[1].previousSibling.childElementCount === 8) {
+
+                console.log($(data)[1]);
+                 d.properties.country = $(data)[1].previousSibling.children[0].innerText;
+                 d.properties.country = d.properties.country.replace(/\n/g, '');
+                 
+                 d.properties.name = $(data)[1].previousSibling.children[1].innerText;
+                 d.properties.name = d.properties.name.replace(/\n/g, '');
+                 
+                 d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
+                 d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
+                 
+                 
+                d.properties.extencion = $(data)[1].previousSibling.children[4].innerText;
+                 d.properties.extencion = d.properties.extencion.replace(/\n/g, '').replace('Extension:', '');
+                 
+                 
+                d.properties.criteria = $(data)[1].previousSibling.children[5].innerText;
+                 d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
+                 
+                 d.properties.property = $(data)[1].previousSibling.children[6].innerText;
+                 d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
+                 geojson.features.push(d);
+
+            }
+
+
         }
+
     });
 }
 ;
 
+
+
+
 window.setTimeout(function() {
     $('.content').append(all);
     $('.relatedContent').addClass('well');
+    console.log(geojson)
 }, 3000);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $(document).ready(function() {
-
-    var geojson = {
-        "type": "FeatureCollection",
-        "features": []
-    };
-
-    var d = {
-        "geometry": {
-            "type": "Point",
-            "coordinates": [0, 0]
-        },
-        "type": "Feature",
-        "properties": {
-            "country": '',
-            "name": '',
-            "property": '',
-            "criteria": '',
-            "dateofinscription": ''
-        }
-    };
 
     $('#datal').click(function() {
 
