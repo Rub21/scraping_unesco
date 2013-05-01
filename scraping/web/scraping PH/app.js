@@ -151,29 +151,12 @@ window.setTimeout(function() {
 function get_lat_lon(days, minutes, seconds, direction) {
     direction.toUpperCase();
     var dd = days + minutes / 60 + seconds / (60 * 60);
-    //alert(dd);
     if (direction == "S" || direction == "W")
     {
         dd = dd * -1;
-    } // Don't do anything for N or E return dd; }
-
+    } 
     return dd;
-}
-;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+};
 
 
 $(document).ready(function() {
@@ -187,9 +170,6 @@ $(document).ready(function() {
     });
 
 });
-
-
-
 
 function createfile(d) {
 
@@ -318,14 +298,8 @@ function createfile(d) {
 
     }
 
-
-
-    //var btn = document.getElementById("linkButton");
     var axx = document.getElementById("unesco");
     axx.download = 'unesco.json';
-
-    // I used this online encoder to create the data url.
-    // axx.href = 'data:text/csv;base64,MTsyOzQ=';  // This was my first test, not having the encoder. 
     axx.href = 'data:text/json;base64,' + Base64.encode(JSON.stringify(d));
 }
 
