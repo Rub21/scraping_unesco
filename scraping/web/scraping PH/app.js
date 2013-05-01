@@ -6,7 +6,7 @@ var geojson = {
 
 
 var all = '';
-for (i = 1; i < 500; i++) {
+for (i = 1; i < 2000; i++) {
 
     data = '';
     $('#widgetscript').attr('urlwidget', 'http://whc.unesco.org/en/list/' + i);
@@ -28,21 +28,10 @@ for (i = 1; i < 500; i++) {
         data = data.replace('/uploads/states/small/', '');
 
 
-//url
-        var url = '';
-        /*var url_f = res.responseText.search('<a href="/en/list/');
-         var url_s = res.responseText.search('gallery/">Gallery</a>');
-         
-         url = res.responseText.substring(url_f, url_s);
-         console.log(url_f +'--'+url_s);*/
-        //console.log(url);
 
+        var url = '';
 
         ///declaracion de JSON
-
-
-
-
 
         var d = {
             "geometry": {
@@ -61,96 +50,92 @@ for (i = 1; i < 500; i++) {
 
         console.log('CONTADOR DE CHILDRENS===');
         console.log($(data)[1].previousSibling.childElementCount);
-        url = $(data)[1].previousSibling.lastElementChild.innerText.replace(/\s/g, '').replace('Ref:', '').replace('bis', '');
+        url = $(data)[1].previousSibling.lastElementChild.innerText.replace(/\s/g, '').replace('Ref:', '').replace('bis', '').replace('quater', '').replace('rev', '');
 
         console.log(url);
         if (data.length > 0) {
-            //all += data;
             //agraga datos en el pages
             $('.content').append(data);
             $('.relatedContent').addClass('well');
 
-            //agraga datos a geoojson
-            d.properties.country = $(data)[1].previousSibling.children[0].innerText;
-            d.properties.country = d.properties.country.replace(/\n/g, '');
-
-            d.properties.name = $(data)[1].previousSibling.children[1].innerText;
-            d.properties.name = d.properties.name.replace(/\n/g, '');
-
-            d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
-            d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
-            d.properties.url = 'http://whc.unesco.org/en/list/' + url;
-            /*if ($(data)[1].previousSibling.childElementCount === 7) {
-             
-             d.properties.country = $(data)[1].previousSibling.children[0].innerText;
-             d.properties.country = d.properties.country.replace(/\n/g, '');
-             
-             d.properties.name = $(data)[1].previousSibling.children[1].innerText;
-             d.properties.name = d.properties.name.replace(/\n/g, '');
-             
-             d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
-             d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
-             
-             d.properties.criteria = $(data)[1].previousSibling.children[4].innerText;
-             d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
-             
-             d.properties.property = $(data)[1].previousSibling.children[5].innerText;
-             d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
-             
-             
-             } else if ($(data)[1].previousSibling.childElementCount === 8) {
-             
-             //console.log($(data)[1]);
-             d.properties.country = $(data)[1].previousSibling.children[0].innerText;
-             d.properties.country = d.properties.country.replace(/\n/g, '');
-             
-             d.properties.name = $(data)[1].previousSibling.children[1].innerText;
-             d.properties.name = d.properties.name.replace(/\n/g, '');
-             
-             d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
-             d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
-             
-             
-             d.properties.extencion = $(data)[1].previousSibling.children[4].innerText;
-             d.properties.extencion = d.properties.extencion.replace(/\n/g, '').replace('Extension:', '');
-             
-             
-             d.properties.criteria = $(data)[1].previousSibling.children[5].innerText;
-             d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
-             
-             d.properties.property = $(data)[1].previousSibling.children[6].innerText;
-             d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
-             
-             } else if ($(data)[1].previousSibling.childElementCount === 9) {
-             console.log($(data)[1].previousSibling.children);
-             } else if ($(data)[1].previousSibling.childElementCount === 6) {
-             console.log($(data)[1].previousSibling.children);
-             } else if ($(data)[1].previousSibling.childElementCount === 5) {
-             console.log($(data)[1].previousSibling.children);
-             }*/
 
 
-            ////////Cordinates
-            var cordinates = $(data)[1].previousSibling.children[2].innerText;
-            var cor = cordinates.split(" ");
-            //longitud
-            var days_lon = parseInt(cor[29].substring(1));
-            var minutes_lon = parseInt(cor[30]);
-            var seconds_lon = parseInt(cor[31]);
-            var direction_lon = cor[29].substring(0, 1);
-            //console.log(cor[29]);
-            var lon = get_lat_lon(days_lon, minutes_lon, seconds_lon, direction_lon);
-            //latitud
-            var days_lat = parseInt(cor[26].substring(1));
-            var minutes_lat = parseInt(cor[27]);
-            var seconds_lat = parseInt(cor[28]);
-            var direction_lat = cor[26].substring(0, 1);
-            //console.log(cor[26]);
-            var lat = get_lat_lon(days_lat, minutes_lat, seconds_lat, direction_lat);
-            //console.log('lat: ' + lat + '+ lon:' + lon);
-            d.geometry.coordinates[0] = lon;
-            d.geometry.coordinates[1] = lat;
-            geojson.features.push(d);
+
+//en caso de que no tenga nombre el patrimonio cultural varia el lugar de las cordenadas
+            var cor_esp = $(data)[1].previousSibling.children[1].innerText.split(" ");
+            var verifica1 = cor_esp[26].substring(0, 1);//obtine la direcion del a cordenada
+            var verifica2 = cor_esp[29].substring(0, 1);//obtine la direcion del a cordenada
+            console.log('=============' + verifica1 + '-' + verifica2);
+            if ((verifica1 === 'N' || verifica1 === 'S') && (verifica2 === 'E' || verifica2 === 'W'))
+            {
+                d.properties.country = $(data)[1].previousSibling.children[0].innerText;
+                d.properties.country = d.properties.country.replace(/\n/g, '');
+                d.properties.name = ""
+                d.properties.dateofinscription = $(data)[1].previousSibling.children[2].innerText;
+                d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
+                d.properties.url = 'http://whc.unesco.org/en/list/' + url;
+
+                //cordinates
+                var cordinates = $(data)[1].previousSibling.children[1].innerText;
+                var cor = cordinates.split(" ");
+                //longitud
+                var days_lon = parseInt(cor[29].substring(1));
+                var minutes_lon = parseInt(cor[30]);
+                var seconds_lon = parseInt(cor[31]);
+                var direction_lon = cor[29].substring(0, 1);
+                //console.log(cor[29]);
+                var lon = get_lat_lon(days_lon, minutes_lon, seconds_lon, direction_lon);
+                //latitud
+                var days_lat = parseInt(cor[26].substring(1));
+                var minutes_lat = parseInt(cor[27]);
+                var seconds_lat = parseInt(cor[28]);
+                var direction_lat = cor[26].substring(0, 1);
+                //console.log(cor[26]);
+                var lat = get_lat_lon(days_lat, minutes_lat, seconds_lat, direction_lat);
+                //console.log('lat: ' + lat + '+ lon:' + lon);
+                d.geometry.coordinates[0] = lon;
+                d.geometry.coordinates[1] = lat;
+                geojson.features.push(d);
+
+
+            } else {
+
+                //agrega datos a geojson
+                d.properties.country = $(data)[1].previousSibling.children[0].innerText;
+                d.properties.country = d.properties.country.replace(/\n/g, '');
+
+                d.properties.name = $(data)[1].previousSibling.children[1].innerText;
+                d.properties.name = d.properties.name.replace(/\n/g, '');
+
+                d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
+                d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
+
+                d.properties.url = 'http://whc.unesco.org/en/list/' + url;
+
+                ////////Cordinates
+                var cordinates = $(data)[1].previousSibling.children[2].innerText;
+                var cor = cordinates.split(" ");
+                //longitud
+                var days_lon = parseInt(cor[29].substring(1));
+                var minutes_lon = parseInt(cor[30]);
+                var seconds_lon = parseInt(cor[31]);
+                var direction_lon = cor[29].substring(0, 1);
+                //console.log(cor[29]);
+                var lon = get_lat_lon(days_lon, minutes_lon, seconds_lon, direction_lon);
+                //latitud
+                var days_lat = parseInt(cor[26].substring(1));
+                var minutes_lat = parseInt(cor[27]);
+                var seconds_lat = parseInt(cor[28]);
+                var direction_lat = cor[26].substring(0, 1);
+                //console.log(cor[26]);
+                var lat = get_lat_lon(days_lat, minutes_lat, seconds_lat, direction_lat);
+                //console.log('lat: ' + lat + '+ lon:' + lon);
+                d.geometry.coordinates[0] = lon;
+                d.geometry.coordinates[1] = lat;
+                geojson.features.push(d);
+
+            }
+
         }
     }
     );
