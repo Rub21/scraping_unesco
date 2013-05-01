@@ -6,15 +6,19 @@ var geojson = {
 
 
 var all = '';
-for (i = 1; i < 3; i++) {
+for (i = 1; i < 500; i++) {
 
     data = '';
     $('#widgetscript').attr('urlwidget', 'http://whc.unesco.org/en/list/' + i);
+    console.log('http://whc.unesco.org/en/list/' + i);
 //get print data  
 
     var urlwidget = $('#widgetscript').attr('urlwidget');
     $.get(urlwidget, function(res) {
         //parametro para eliminar string
+
+
+
         var first = res.responseText.search('<div class="relatedContent alternate">');
         var second = res.responseText.search('<div class="box gmap">');
 
@@ -23,10 +27,22 @@ for (i = 1; i < 3; i++) {
         data = data.replace('style="vertical-align:middle; border:1px solid #666666"', '');
         data = data.replace('/uploads/states/small/', '');
 
-        //console.log($(data)[1].previousSibling.children[1].innerText);
-        //console.log($(data));
+
+//url
+        var url = '';
+        /*var url_f = res.responseText.search('<a href="/en/list/');
+         var url_s = res.responseText.search('gallery/">Gallery</a>');
+         
+         url = res.responseText.substring(url_f, url_s);
+         console.log(url_f +'--'+url_s);*/
+        //console.log(url);
+
 
         ///declaracion de JSON
+
+
+
+
 
         var d = {
             "geometry": {
@@ -43,56 +59,75 @@ for (i = 1; i < 3; i++) {
             }
         };
 
-        console.log('CONTADOR DE CHILDRENS');
+        console.log('CONTADOR DE CHILDRENS===');
         console.log($(data)[1].previousSibling.childElementCount);
+        url = $(data)[1].previousSibling.lastElementChild.innerText.replace(/\s/g, '').replace('Ref:', '').replace('bis', '');
 
+        console.log(url);
         if (data.length > 0) {
-            all += data;
-            if ($(data)[1].previousSibling.childElementCount === 7) {
+            //all += data;
+            //agraga datos en el pages
+            $('.content').append(data);
+            $('.relatedContent').addClass('well');
 
-                d.properties.country = $(data)[1].previousSibling.children[0].innerText;
-                d.properties.country = d.properties.country.replace(/\n/g, '');
+            //agraga datos a geoojson
+            d.properties.country = $(data)[1].previousSibling.children[0].innerText;
+            d.properties.country = d.properties.country.replace(/\n/g, '');
 
-                d.properties.name = $(data)[1].previousSibling.children[1].innerText;
-                d.properties.name = d.properties.name.replace(/\n/g, '');
+            d.properties.name = $(data)[1].previousSibling.children[1].innerText;
+            d.properties.name = d.properties.name.replace(/\n/g, '');
 
-                d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
-                d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
-
-                d.properties.criteria = $(data)[1].previousSibling.children[4].innerText;
-                d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
-
-                d.properties.property = $(data)[1].previousSibling.children[5].innerText;
-                d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
-
-
-            } else if ($(data)[1].previousSibling.childElementCount === 8) {
-
-                //console.log($(data)[1]);
-                d.properties.country = $(data)[1].previousSibling.children[0].innerText;
-                d.properties.country = d.properties.country.replace(/\n/g, '');
-
-                d.properties.name = $(data)[1].previousSibling.children[1].innerText;
-                d.properties.name = d.properties.name.replace(/\n/g, '');
-
-                d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
-                d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
-
-
-                d.properties.extencion = $(data)[1].previousSibling.children[4].innerText;
-                d.properties.extencion = d.properties.extencion.replace(/\n/g, '').replace('Extension:', '');
-
-
-                d.properties.criteria = $(data)[1].previousSibling.children[5].innerText;
-                d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
-
-                d.properties.property = $(data)[1].previousSibling.children[6].innerText;
-                d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
-
-
-
-
-            }
+            d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
+            d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
+            d.properties.url = 'http://whc.unesco.org/en/list/' + url;
+            /*if ($(data)[1].previousSibling.childElementCount === 7) {
+             
+             d.properties.country = $(data)[1].previousSibling.children[0].innerText;
+             d.properties.country = d.properties.country.replace(/\n/g, '');
+             
+             d.properties.name = $(data)[1].previousSibling.children[1].innerText;
+             d.properties.name = d.properties.name.replace(/\n/g, '');
+             
+             d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
+             d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
+             
+             d.properties.criteria = $(data)[1].previousSibling.children[4].innerText;
+             d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
+             
+             d.properties.property = $(data)[1].previousSibling.children[5].innerText;
+             d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
+             
+             
+             } else if ($(data)[1].previousSibling.childElementCount === 8) {
+             
+             //console.log($(data)[1]);
+             d.properties.country = $(data)[1].previousSibling.children[0].innerText;
+             d.properties.country = d.properties.country.replace(/\n/g, '');
+             
+             d.properties.name = $(data)[1].previousSibling.children[1].innerText;
+             d.properties.name = d.properties.name.replace(/\n/g, '');
+             
+             d.properties.dateofinscription = $(data)[1].previousSibling.children[3].innerText;
+             d.properties.dateofinscription = d.properties.dateofinscription.replace(/\n/g, '').replace('Date of Inscription:', '');
+             
+             
+             d.properties.extencion = $(data)[1].previousSibling.children[4].innerText;
+             d.properties.extencion = d.properties.extencion.replace(/\n/g, '').replace('Extension:', '');
+             
+             
+             d.properties.criteria = $(data)[1].previousSibling.children[5].innerText;
+             d.properties.criteria = d.properties.criteria.replace(/\n/g, '').replace('Criteria:', '');
+             
+             d.properties.property = $(data)[1].previousSibling.children[6].innerText;
+             d.properties.property = d.properties.property.replace(/\n/g, '').replace('Property :', '');
+             
+             } else if ($(data)[1].previousSibling.childElementCount === 9) {
+             console.log($(data)[1].previousSibling.children);
+             } else if ($(data)[1].previousSibling.childElementCount === 6) {
+             console.log($(data)[1].previousSibling.children);
+             } else if ($(data)[1].previousSibling.childElementCount === 5) {
+             console.log($(data)[1].previousSibling.children);
+             }*/
 
 
             ////////Cordinates
@@ -115,21 +150,16 @@ for (i = 1; i < 3; i++) {
             //console.log('lat: ' + lat + '+ lon:' + lon);
             d.geometry.coordinates[0] = lon;
             d.geometry.coordinates[1] = lat;
-
             geojson.features.push(d);
-
-
-
         }
-
     }
     );
 }
 ;
 window.setTimeout(function() {
-    $('.content').append(all);
-    $('.relatedContent').addClass('well');
+
     console.log(geojson)
+    $('#loading').removeClass('loading');
 }, 3000);
 
 
@@ -163,98 +193,156 @@ function get_lat_lon(days, minutes, seconds, direction) {
 
 $(document).ready(function() {
 
+
     $('#datal').click(function() {
 
-        console.log($(".relatedContent > div").size());
-        console.log($(".relatedContent").size());
-
-        //console.log($(".relatedContent").get(0));
-
-
-        for (i = 1; i <= $(".relatedContent > div").size() - 1; i++) {
-
-
-            if (i % 7 == 0) {
-                console.log('----------------------------------------Nombres de Paises----')
-
-                var country = $(".relatedContent > div").get(i - 7);
-                var name = $(".relatedContent > div").get(i - 6);
-                var dateofinscription = $(".relatedContent > div").get(i - 5);
-                var criteria = $(".relatedContent > div").get(i - 4);
-                var property = $(".relatedContent > div").get(i - 3);
-                console.log(country);
-                console.log(name);
-                console.log(dateofinscription);
-                console.log(criteria);
-                console.log(property);
-
-            }
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /* for (i = 1; i <= $(".relatedContent>div").size()-1; i++) {
-         
-         console.log(i - 7 + 1);
-         if (i % 7 == 0) {
-         
-         d.properties.country = $(".relatedContent > div").get(i - 7 + 1);
-         d.properties.country = d.properties.country.innerText.replace(/\n/g, '');
-         
-         d.properties.name = $(".relatedContent > div").get(i - 7 + 2);
-         d.properties.name = d.properties.name.innerText.replace(/\n/g, '');
-         
-         d.properties.dateofinscription = $(".relatedContent > div").get(i - 7 + 4);
-         d.properties.dateofinscription = d.properties.dateofinscription.innerText.replace(/\n/g, '').replace('Date of Inscription:', '');
-         
-         d.properties.criteria = $(".relatedContent > div").get(i - 7 + 5);
-         d.properties.criteria = d.properties.criteria.innerText.replace(/\n/g, '').replace('Criteria:', '');
-         
-         d.properties.property = $(".relatedContent > div").get(i - 7 + 6);
-         d.properties.property = d.properties.property.innerText.replace(/\n/g, '').replace('Property :', '');
-         
-         geojson.features.push(d);
-         }
-         
-         
-         }*/
-
-
-
-
-
-
-
-        console.log(geojson);
-
-
+        $('#btn-full-with').trigger('click');
+        createfile(geojson);
 
     });
-
-
 
 });
 
 
 
 
+function createfile(d) {
 
+    var Base64 = {
+        // private property
+        _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+        // public method for encoding
+        encode: function(input) {
+            var output = "";
+            var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+            var i = 0;
+
+            input = Base64._utf8_encode(input);
+
+            while (i < input.length) {
+
+                chr1 = input.charCodeAt(i++);
+                chr2 = input.charCodeAt(i++);
+                chr3 = input.charCodeAt(i++);
+
+                enc1 = chr1 >> 2;
+                enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+                enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+                enc4 = chr3 & 63;
+
+                if (isNaN(chr2)) {
+                    enc3 = enc4 = 64;
+                } else if (isNaN(chr3)) {
+                    enc4 = 64;
+                }
+
+                output = output + this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) + this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+            }
+
+            return output;
+        },
+        // public method for decoding
+        decode: function(input) {
+            var output = "";
+            var chr1, chr2, chr3;
+            var enc1, enc2, enc3, enc4;
+            var i = 0;
+
+            input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+            while (i < input.length) {
+
+                enc1 = this._keyStr.indexOf(input.charAt(i++));
+                enc2 = this._keyStr.indexOf(input.charAt(i++));
+                enc3 = this._keyStr.indexOf(input.charAt(i++));
+                enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+                chr1 = (enc1 << 2) | (enc2 >> 4);
+                chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+                chr3 = ((enc3 & 3) << 6) | enc4;
+
+                output = output + String.fromCharCode(chr1);
+
+                if (enc3 != 64) {
+                    output = output + String.fromCharCode(chr2);
+                }
+                if (enc4 != 64) {
+                    output = output + String.fromCharCode(chr3);
+                }
+
+            }
+
+            output = Base64._utf8_decode(output);
+
+            return output;
+
+        },
+        // private method for UTF-8 encoding
+        _utf8_encode: function(string) {
+            string = string.replace(/\r\n/g, "\n");
+            var utftext = "";
+
+            for (var n = 0; n < string.length; n++) {
+
+                var c = string.charCodeAt(n);
+
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                } else if ((c > 127) && (c < 2048)) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                } else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+
+            }
+
+            return utftext;
+        },
+        // private method for UTF-8 decoding
+        _utf8_decode: function(utftext) {
+            var string = "";
+            var i = 0;
+            var c = c1 = c2 = 0;
+
+            while (i < utftext.length) {
+
+                c = utftext.charCodeAt(i);
+
+                if (c < 128) {
+                    string += String.fromCharCode(c);
+                    i++;
+                } else if ((c > 191) && (c < 224)) {
+                    c2 = utftext.charCodeAt(i + 1);
+                    string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                    i += 2;
+                } else {
+                    c2 = utftext.charCodeAt(i + 1);
+                    c3 = utftext.charCodeAt(i + 2);
+                    string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                    i += 3;
+                }
+
+            }
+
+            return string;
+        }
+
+    }
+
+
+
+    //var btn = document.getElementById("linkButton");
+    var axx = document.getElementById("unesco");
+    axx.download = 'unesco.json';
+
+    // I used this online encoder to create the data url.
+    // axx.href = 'data:text/csv;base64,MTsyOzQ=';  // This was my first test, not having the encoder. 
+    axx.href = 'data:text/json;base64,' + Base64.encode(JSON.stringify(d));
+}
 
 
 

@@ -4,20 +4,40 @@
         <meta charset=utf-8 />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
         <title>Scraping UNESCO Data</title>
 
     </head>
     <body>
-        
-        <a class="btn" href="#" id="datal"> get length</a>
+
+        <a class="btn" href="#" id="datal"> Get Data</a>
+        <div id="loading" class="loading"></div>
         <div class="content">           
-            
+
         </div>
-        
-    </body>       
-   
- <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
-<script type="text/javascript" src="jquery.xdomainajax.js"></script>
-<script id="widgetscript" type="text/javascript" src="app.js" urlwidget=""></script>
+
+
+        <div id="popover" class="modal hide fade" tabindex="-1" data-width="760">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4>Dowland Data</h4>
+            </div>
+            <div class="modal-body">
+                <a type="button" class="btn" id="unesco">Dowland</a>
+            </div>
+        </div>
+
+        <a href="#popover" id="btn-full-with"  class="pull-right" data-toggle="modal"></a>
+    </body> 
+
+
+
+
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script type="text/javascript" src="jquery.xdomainajax.js"></script>
+    <script id="widgetscript" type="text/javascript" src="app.js" urlwidget=""></script>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 
 </html>

@@ -1,0 +1,22 @@
+
+/*-----------------------------------
+loading gif
+-------------------------------------*/
+
+.loading {
+    position: fixed;
+    background: url(../images/ajax-loader.gif) no-repeat;
+    content: "Cargando...";
+    color: #666;
+    left: 50%;  
+    height: 16px;
+    line-height: 16px;
+    margin-top: -8px;
+    margin-left: -40px;
+    position: absolute;
+    font-size: 12px;
+    top: 50%; 
+    text-indent: 26px;
+    width: 80px;
+}
+
