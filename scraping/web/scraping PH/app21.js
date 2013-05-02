@@ -3,7 +3,7 @@ var geojson = {
     "features": []
 };
 
-for (i = 1300; i < 1450; i++) {
+for (i = 1; i < 2000; i++) {
 
     data = '';
     $('#widgetscript').attr('urlwidget', 'http://whc.unesco.org/en/list/' + i);
@@ -35,16 +35,16 @@ for (i = 1300; i < 1450; i++) {
         //console.log(data);
         var name = $('h1', data)[0].innerText;
         if (typeof(name) !== 'undefined') {
-            $('.content').append(data);
 
             d.properties.name = name;
             var aditional_data = $('div .relatedContent', data);
             //console.log(aditional_data);
             d.properties.country = get_string(aditional_data[0].children[0].innerText);
 
+           /* $('.content').append(aditional_data);
+            $('.relatedContent').addClass('well');*/
+
             //comprueba los datos adicinales para asignar cordenadas 
-
-
             //para province
             var cor_e = aditional_data[0].children[1].innerText.split(" ");
             var v1 = cor_e[26].substring(0, 1);//obtine la direcion del a cordenada
