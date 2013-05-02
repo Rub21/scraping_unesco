@@ -6,7 +6,7 @@ var geojson = {
 
 
 var all = '';
-for (i = 1; i < 2000; i++) {
+for (i = 1; i < 10; i++) {
 
     data = '';
     $('#widgetscript').attr('urlwidget', 'http://whc.unesco.org/en/list/' + i);
@@ -16,6 +16,17 @@ for (i = 1; i < 2000; i++) {
     var urlwidget = $('#widgetscript').attr('urlwidget');
     $.get(urlwidget, function(res) {
         //parametro para eliminar string
+
+
+
+
+        var name_prefij = res.responseText.search('<div class="content">');
+        var name_suf = res.responseText.search('<div class="tabs_inte">');
+        console.log(name_prefij + '--' + name_suf);
+
+        // var name = res.responseText.substring(name_prefij, name_suf);
+        console.log(name);
+
 
 
 
@@ -154,7 +165,7 @@ function get_lat_lon(days, minutes, seconds, direction) {
     if (direction == "S" || direction == "W")
     {
         dd = dd * -1;
-    } 
+    }
     return dd;
 };
 
