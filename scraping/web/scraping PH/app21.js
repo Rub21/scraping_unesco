@@ -41,15 +41,15 @@ for (i = 1; i < 2000; i++) {
             //console.log(aditional_data);
             d.properties.country = get_string(aditional_data[0].children[0].innerText);
 
-           /* $('.content').append(aditional_data);
-            $('.relatedContent').addClass('well');*/
+            /* $('.content').append(aditional_data);
+             $('.relatedContent').addClass('well');*/
 
             //comprueba los datos adicinales para asignar cordenadas 
             //para province
             var cor_e = aditional_data[0].children[1].innerText.split(" ");
             var v1 = cor_e[26].substring(0, 1);//obtine la direcion del a cordenada
             var v2 = cor_e[29].substring(0, 1);//obtine la direcion del a cordenada
-            console.log('*************' + v1 + '-' + v2);
+            //console.log('*************' + v1 + '-' + v2);
             if ((v1 === 'N' || v1 === 'S') && (v2 === 'E' || v2 === 'W')) {
                 d.properties.province = "";
             }
@@ -88,7 +88,7 @@ for (i = 1; i < 2000; i++) {
                 d.properties.url = 'http://whc.unesco.org/en/list/' + get_string(aditional_data[0].lastElementChild.innerText).replace('Ref:', '').replace('bis', '').replace('quater', '').replace('rev', '').replace(/\s/g, '');
 
             }
-
+            console.log(d.properties.url);
             geojson.features.push(d);
 
         }
